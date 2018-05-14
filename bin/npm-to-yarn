@@ -1,0 +1,19 @@
+#!/bin/sh
+
+[ -f ./package.json ] || { echo "Please, start the script from the root of your package"; exit 1; }
+
+if ! type yarn > /dev/null; then
+  echo "This feature depends on yarn been installed. Please, install yarn."
+  echo "https://yarnpkg.com/lang/en/docs/install/"
+  
+  exit 1
+fi
+
+[ -f ./package-lock.json ] && rm ./package-lock.json
+[ -f ./.npmrc ] && rm ./.npmrc
+
+sed -i '' 's/npm run/yarn/g' ./package.json
+sed -i '' 's/\([[:blank:]]*\)npm \([[:blank:]]*\)/\1yarn \2/' ./package.json
+
+echo "save-prefix \"\"\n" >> ./.yarnrc
+yarn install
